@@ -3,7 +3,7 @@
 from trello_cli import TRELLO_READ_ERROR, TRELLO_WRITE_ERROR, SUCCESS
 from trello_cli.trello_service import TrelloService
 from trello_cli.models import *
-
+from trello_cli.trello_utils import *
 #dependency imports
 
 #misc imports

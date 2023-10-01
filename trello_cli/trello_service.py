@@ -3,8 +3,6 @@ from trello_cli import TRELLO_READ_ERROR, TRELLO_WRITE_ERROR, SUCCESS
 from trello_cli.models import *
 
 # dependencies imports
-from trello import TrelloClient, create_oauth_token
-
 
 # misc imports
 import os

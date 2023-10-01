@@ -1,8 +1,10 @@
 
-#module improts
+#module imports 
 
 #dependency imports
-from trello import Board, List as TrelloList, Label, Card 
+#from trello import Board, List as TrelloList, Label, Card 
+from trello_cli.trello_utils import *
+
 #misc imports 
 from typing import NamedTuple, List 
 
@@ -13,10 +15,10 @@ class GetOAuthTokenResponse(NamedTuple):
     status_code: int
 
 class GetAllBoardsResponse(NamedTuple):
-    """stores response when retrieving all boards from trello.com
+    """stores response when retrieving all boards
 
     Attributes:
-        res (List[dict]) : list of boards
+        res (List[Board]) : list of boards
         status_code (int) : status code of response (success/error)
     
     """
@@ -25,33 +27,66 @@ class GetAllBoardsResponse(NamedTuple):
     status_code: int
 
 class GetBoardResponse(NamedTuple):
-    """response from get_board"""
+    """stores response when retrieving a board
+    
+    Attributes:
+        res (Board) : board
+        status_code (int) : status code of response (success/error)
+
+    """
     res: Board
     status_code: int
 
 class GetAllListsResponse(NamedTuple):
-    """response from get_all_lists"""
-    res: List[TrelloList]
+    """stores response when retrieving all lists from a board
+    
+    Attributes:
+        res (List[TrelloList]) : list of lists
+        status_code (int) : status code of response (success/error)
+    
+    """
+    res: List[Column]
     status_code: int
 
 class GetListResponse(NamedTuple):
-    """response from get_list"""
-    res: TrelloList
+    """stores response when retrieving a list from a board
+    
+    Attributes:
+        res (TrelloList) : list
+        status_code (int) : status code of response (success/error)
+    """
+    res: Column
     status_code: int
 
 class GetAllLabelsResponse(NamedTuple):
-    """response from get_all_labels"""
+    """stores response when retrieving all labels
+    
+    Attributes:
+        res (List[Label]) : list of labels
+        status_code (int) : status code of response (success/error)
+    """
     res: List[Label]
     status_code: int
 
 class GetLabelResponse(NamedTuple):
-    """response from get_label"""
+    """stores response when retrieving a label 
+    
+    Attributes:
+        res (Label) : label
+        status_code (int) : status code of response (success/error)
+    """
     res: Label
     status_code: int
 
 
 class AddCardResponse(NamedTuple):
-    """response from add_card"""
+    """stores response when adding a card to a column
+    
+    Attributes:
+        res (Card) : card
+        status_code (int) : status code of response (success/error)
+    
+    """
     res: Card
     status_code: int
 
