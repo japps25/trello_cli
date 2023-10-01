@@ -1,0 +1,21 @@
+[project]
+name = "trellocli_<YOUR_USERNAME>"
+version = "0.1.0"
+authors = [
+  { name = "<YOUR_NAME>", email = "<YOUR_EMAIL>" }
+]
+description = "Program to modify your Trello boards from your computer's command line"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+    "pytest==7.4.2",
+    "pytest-mock==3.11.1"
+]
+
+[project.urls]
+"Homepage" = ""
