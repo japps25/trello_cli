@@ -5,17 +5,10 @@
 #dependency imports
 
 #misc imports 
-from typing import NamedTuple, List  
+from typing import NamedTuple 
 
 class GetOAuthTokenResponse(NamedTuple):
-    """stores response from get_user_oauth_token
-    
-    Attributes:
-        token (str) : token for user
-        token_secret (str) : token secret for user
-        status_code (int) : status code of response (success/error)
-
-    """
+    """response from get_user_oauth_token"""
     token: str
     token_secret: str
     status_code: int
