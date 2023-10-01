@@ -1,6 +1,5 @@
 #trello_cli/__main__.py
-
-from app import cli 
+from trello_cli import cli 
 
 def main():
     #TODO: implement after cli is implemented

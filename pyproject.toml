@@ -1,8 +1,8 @@
 [project]
-name = "trellocli_<YOUR_USERNAME>"
+name = "trellocli_japps25"
 version = "0.1.0"
 authors = [
-  { name = "<YOUR_NAME>", email = "<YOUR_EMAIL>" }
+  { name = "Jessica", email = "japps156@gmail.com" }
 ]
 description = "Program to modify your Trello boards from your computer's command line"
 readme = "README.md"
