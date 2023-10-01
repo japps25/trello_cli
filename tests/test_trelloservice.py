@@ -27,7 +27,7 @@ def test_get_access_token(mocker):
 
 def test_get_all_boards(mocker):
     """test to check that boards have been fetched"""
-#TODO: GetAllBoardsResponse is a model that has yet to be set in models
+
     mock_res = GetAllBoardsResponse(
         res = [],
         status_code = SUCCESS
@@ -43,7 +43,7 @@ def test_get_all_boards(mocker):
 
 def test_get_board(mocker):
     """test to check that board has been retrieved"""
-    #TODO: GetBoardResponse is a model that has yet to be set in models
+    
     mock_res = GetBoardResponse(
         res = None,
         status_code = SUCCESS
@@ -59,7 +59,7 @@ def test_get_board(mocker):
 
 def test_get_all_lists(mocker):
     """test to check that lists have been fetched"""
-    #TODO: GetAllListsResponse is a model that has yet to be set in models
+    
     mock_res = GetAllListsResponse(
         res = [],
         status_code = SUCCESS
@@ -75,7 +75,7 @@ def test_get_all_lists(mocker):
 
 def test_get_list(mocker):
     """test to check that list has been retrieved"""
-    #TODO: GetListResponse is a model that has yet to be set in models
+    
     mock_res = GetListResponse(
         res = None,
         status_code = SUCCESS
