@@ -3,7 +3,7 @@
 from trello_cli import TRELLO_READ_ERROR, TRELLO_WRITE_ERROR, SUCCESS
 from trello_cli.trello_service import TrelloService
 from trello_cli.models import *
-from trello_cli.trello_utils import *
+
 #dependency imports
 
 #misc imports
@@ -12,14 +12,14 @@ from trello_cli.trello_utils import *
 def test_get_access_token(mocker):
     """test to check whether user is authenticated or not"""
     
-    mock_rest = GetOAuthTokenResponse(
+    mock_res = GetOAuthTokenResponse(
         token = "test", 
         token_secret="test", 
         status_code = SUCCESS
     )
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_user_oauth_token",
-            return_value=mock_rest   
+            return_value=mock_res  
   )
     trellojob = TrelloService()
     res = trellojob.get_user_oauth_token()
@@ -51,7 +51,7 @@ def test_get_board(mocker):
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_board",
         return_value=mock_res 
-  )
+    )
     trellojob = TrelloService()
     res = trellojob.get_board(board_id="test")
 
@@ -67,7 +67,7 @@ def test_get_all_lists(mocker):
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_all_lists",
         return_value=mock_res 
-  )
+    )
     trellojob = TrelloService()
     res = trellojob.get_all_lists(board=None)
 
@@ -83,7 +83,7 @@ def test_get_list(mocker):
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_list",
         return_value=mock_res 
-  )
+    )
     trellojob = TrelloService()
     res = trellojob.get_list(board=None, list_id="")
 
@@ -99,7 +99,7 @@ def test_get_all_labels(mocker):
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_all_labels",
         return_value=mock_res 
-  )
+    )
     trellojob = TrelloService()
     res = trellojob.get_all_labels(board=None)
 
@@ -115,7 +115,7 @@ def test_get_label(mocker):
     mocker.patch(
         "trello_cli.trello_service.TrelloService.get_label",
         return_value=mock_res 
-  )
+    )
     trellojob = TrelloService()
     res = trellojob.get_label(board=None, label_id="")
 

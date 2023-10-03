@@ -2,8 +2,8 @@
 #module imports 
 
 #dependency imports
-#from trello import Board, List as TrelloList, Label, Card 
-from trello_cli.trello_utils import *
+#from trello import Board, List as Column, Label, Card
+from trello_cli.trello_utils import Board, List as Column, Label, Card
 
 #misc imports 
 from typing import NamedTuple, List 

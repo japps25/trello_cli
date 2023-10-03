@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+keys.ps1
 
 # Spyder project settings
 .spyderproject
@@ -160,4 +161,5 @@ cython_debug/
 #.idea/
 
 # notes 
-notes.txt
+custom_trello/
+script.py
