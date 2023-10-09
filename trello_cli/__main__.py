@@ -1,10 +1,11 @@
-#trello_cli/__main__.py
-from trello_cli import cli 
+""" trello_cli main entry point"""
+
+from trello_cli import cli
+
 
 def main():
-    #TODO: implement after cli is implemented
-    pass
+    cli.app()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
-

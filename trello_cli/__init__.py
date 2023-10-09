@@ -1,3 +1,4 @@
+""" Top-level package for the trello_cli"""
 
 __app_name__ = 'trello_cli'
 __version__ = '0.1.0'
