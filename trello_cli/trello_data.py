@@ -2,6 +2,7 @@ from rich.console import Console, ConsoleOptions, RenderResult
 import os
 
 
+
 class Comment(object):
 
     def __init__(self, id, data, member_creator, date):
@@ -9,6 +10,7 @@ class Comment(object):
         self.data = data
         self.member_creator = member_creator
         self.date = date
+
 
     @classmethod
     def from_json(cls, data):
@@ -63,13 +65,13 @@ class Card(object):
 
     """
 
-    def __init__(self, name, id, labels, desc, comments, list_id):
+    def __init__(self, name, id, labels, desc, comments):
         self.name = name
         self.id = id
         self.labels = labels
         self.desc = desc
         self.comments = comments
-        self.list_id = list_id
+
 
     @classmethod
     def from_json(cls, data):
@@ -77,13 +79,13 @@ class Card(object):
                    name=data['name'],
                    labels=Label.from_json_list(data['labels']),
                    desc=data['desc'],
-                   comments=data['badges']['comments'],
-                   list_id=data['idList'])
+                   comments=data['badges']['comments']
+                   )
         return card
 
     def __repr__(self):
         return (
-            f'{self.name}, {self.id}'
+            f'{self.name}'
         )
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
@@ -95,27 +97,6 @@ class Card(object):
         yield f"[b]Labels: {labels}[/b]"
         yield f"[b]Comments:{self.comments}[/b]"
 
-    # def __init__(self, name, id, labels, desc, comments, due, start, closed):
-    #     self.name = name
-    #     self.id = id
-    #     self.labels = labels
-    #     self.desc = desc
-    #     self.comments = comments
-    #     self.due = due
-    #     self.start = start
-    #     self.closed = closed
-    #
-    # @classmethod
-    # def from_json(cls, data):
-    #     card = cls(id=data['id'],
-    #                name=data['name'],
-    #                labels=Label.from_json_list(data['labels']),
-    #                desc=data['desc'],
-    #                comments=data['badges']['comments'],
-    #                due=data['due'],
-    #                start=data['start'],
-    #                closed=data['closed'])
-    #     return card
 
 
 class List(object):
@@ -134,7 +115,7 @@ class List(object):
 
     def __repr__(self):
         return (
-            f'{self.name}, {self.id}'
+            f'{self.name}'
         )
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
@@ -154,7 +135,7 @@ class Board(object):
                    )
 
     def __repr__(self):
-        return f'{self.id},{self.name}'
+        return f'{self.name}'
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
         yield f"[b]Board:[/b] #{self.name}"

@@ -1,26 +1,32 @@
 # module imports
 from trello_cli.trello_data import Board, List as TrelloList, Card, Comment, Label
 from trello_cli.config import trello_api
+from trello_cli.trello_api import TrelloApi
+
+import os
+
 # dependencies
 from typing import List
 from requests_oauthlib import OAuth1Session
+import os
 
-trello_api = trello_api()
+
+trello_api = TrelloApi(api_key=os.getenv("TRELLO_API_KEY"), api_token=os.getenv("TRELLO_API_TOKEN"))
 
 
 def get_all_boards() -> List[Board]:
-    response = trello_api.get_all_boards()
-    return [Board.from_json(board) for board in response]
+    json_payload = trello_api.get_all_boards()
+    return [Board.from_json(board) for board in json_payload]
 
 
 def get_board(board_id: str) -> Board:
-    response = trello_api.get_board(board_id)
-    return Board.from_json(response)
+    json_payload = trello_api.get_board(board_id)
+    return Board.from_json(json_payload)
 
 
 def get_all_lists(board_id: str) -> List[TrelloList]:
-    response = trello_api.get_all_lists(board_id)
-    trello_lists = [TrelloList.from_json(trello_list) for trello_list in response]
+    json_payload = trello_api.get_all_lists(board_id)
+    trello_lists = [TrelloList.from_json(trello_list) for trello_list in json_payload]
     return trello_lists
 
 
@@ -47,10 +53,12 @@ def get_card(card_id: str) -> Card:
     return card
 
 
-def get_comments(card_id: str) -> List[Comment]:
+def get_comments(card_id: str) -> None:
     json_payload = trello_api.get_actions(card_id)
     comments = [Comment.from_json(comment) for comment in json_payload]
-    return sorted(comments)
+    comments = sorted(comments, key=lambda comment: comment.date, reverse=True)
+    for comment in comments:
+        print(comment)
 
 
 def create_comment(card_id: str, text: str) -> Comment:
@@ -75,7 +83,7 @@ def add_card_label(card_id: str, label_id: str):
     trello_api.add_card_labels(card_id, label_id)
 
 
-def create_oauth_token(key=None, secret=None, verbose=False):
+def create_oauth_token(verbose=False):
     """
     Script to obtain an OAuth token from Trello.
 
@@ -92,8 +100,8 @@ def create_oauth_token(key=None, secret=None, verbose=False):
 
     expiration = '30days'
     scope = 'read,write'
-    trello_key = api_key
-    trello_secret = api_secret
+    trello_key = trello_api.api_key
+    trello_secret = trello_api.api_secret
     name = 'trello_cli'
 
     # Step 1: Get a request token. This is a temporary token that is used for
@@ -152,13 +160,3 @@ def create_oauth_token(key=None, secret=None, verbose=False):
         print("")
 
     return access_token
-
-# boards = get_all_boards()
-#
-# # [{'id': '6523e63b8e337f3ce55311a2', 'name': 'Design System Checklist'},
-# #  {'id': '6523e5aa8c0d41e7537d7b2f', 'name': 'Kanban Template'},
-# #  {'id': '6523e605b0d6b5829b5662e3', 'name': 'Remote Team Hub'}]
-#
-# board_id = '6523e63b8e337f3ce55311a2'
-# lists = get_all_lists(board_id)
-# print(lists)

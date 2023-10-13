@@ -6,4 +6,6 @@ import os
 @pytest.fixture(scope="session")
 def trello_api():
     """Create TrelloAPI object"""
-    return TrelloApi(api_key=os.getenv("TRELLO_API_KEY"),api_token=os.getenv("TRELLO_API_TOKEN"))
+    return TrelloApi(api_key=os.getenv("TRELLO_API_KEY"), api_token=os.getenv("TRELLO_API_TOKEN"))
+
+

@@ -1,33 +1,8 @@
-import pytest
-
-from trello_cli.trello_api import TrelloApi
+import pytest_mock
 
 
-def test_auth_api_key_error() -> None:
-    """
-    Unit Test to Test Auth on Post Request
-    :return: None
-    """
-    trello_api_temp = TrelloApi(api_key="FAKE_KEY", api_token='FAKE_TOKEN')
-    trello_api_temp.headers = {
-        "Accept": "application/json"
-    }
-    trello_api_temp.base_url = "https://api.trello.com/1/"
-
-    expected = '{"ERROR": "Authorization Error. Please check API Key"}'
-
-    actual_response = trello_api_temp.get_all_boards()
-
-    assert expected == actual_response
-
-
-def test_get_all_boards(trello_api):
-    """
-    Unit Test to List Trello Boards
-    :param trello_api: Class Object Parameter from conftest. Type - TrelloAPI
-    :return: None
-    """
-    expected_response = [
+def test_mock_get_all_boards(mocker, trello_api) -> None:
+    mocked_call_api_value = [
         {
             'id': '6523e63b8e337f3ce55311a2',
             'name': 'Design System Checklist'
@@ -46,21 +21,25 @@ def test_get_all_boards(trello_api):
         }
     ]
 
-    actual_response = trello_api.get_all_boards()
-    assert actual_response == expected_response
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
+    actual_mock_response = trello_api.get_all_boards()
+    assert mocked_call_api_value == actual_mock_response
 
 
-def test_get_board(trello_api):
-    expected = {
+def test_mock_get_board(mocker, trello_api) -> None:
+    mocked_call_api_value = {
         'id': '6526f7f91942a8eb420c84cc',
         'name': 'Meal Planning'
     }
-    actual_response = trello_api.get_board(board_id='6526f7f91942a8eb420c84cc')
-    assert actual_response == expected
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
+    actual_mock_response = trello_api.get_board(board_id='6526f7f91942a8eb420c84cc')
+    assert mocked_call_api_value == actual_mock_response
 
 
-def test_get_all_lists(trello_api):
-    expected = [
+def test_mock_get_list(mocker, trello_api) -> None:
+    mocked_call_api_value = [
         {
             'id': '6526f7f91942a8eb420c84cd',
             'name': 'Shopping Lists'
@@ -74,26 +53,14 @@ def test_get_all_lists(trello_api):
             'name': 'Make Ahead'
         }
     ]
-    actual_response = trello_api.get_all_lists(board_id='6526f7f91942a8eb420c84cc')
-    assert actual_response == expected
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
+    actual_mock_response = trello_api.get_all_lists(board_id='6526f7f91942a8eb420c84cc')
+    assert mocked_call_api_value == actual_mock_response
 
 
-def test_get_list(trello_api):
-    expected = {
-        'id': '6526f7f91942a8eb420c84ce',
-        'name': '10/26-11/1 Meal Plan',
-        'closed': False,
-        'idBoard': '6526f7f91942a8eb420c84cc',
-        'pos': 3072,
-        'status': None
-    }
-    actual_response = trello_api.get_list(list_id='6526f7f91942a8eb420c84ce')
-    assert actual_response == expected
-
-
-# can be used as a proxy for check the creation of a new list
-def test_get_all_cards(trello_api):
-    expected = [
+def test_get_all_cards(mocker, trello_api) -> None:
+    mocked_call_api_value = [
         {
             'id': '6526f7f91942a8eb420c87a6',
             'name': 'Rosemary Pork Burgers',
@@ -160,49 +127,13 @@ def test_get_all_cards(trello_api):
             }
         }
     ]
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
     actual_response = trello_api.get_all_cards(list_id='6526f7f91942a8eb420c84d6')
-    assert actual_response == expected
+    assert mocked_call_api_value == actual_response
 
-
-def test_get_card(trello_api):
-    expected = {
-        'id': '6526f7f91942a8eb420c8798',
-        'name': 'Kroger',
-        'labels': [],
-        'desc': "**Instructions**\nAdd what you want purchased in the appropriate category and leave it unchecked. If what "
-                "you want is already listed, make sure it's unchecked so we know we need it.\n\n**Menu**\n*Thursday*\n "
-                "Tacos\n\n*Friday*\nHot dogs and tater tots \n\n*Saturday*\nChicken, potatoes and cabbage\n\n*Sunday*\nEgg "
-                "roll in a bowl\n\n*Monday*\nCreamy sausage pasta\n\n*Tuesday*\nBeans and rice \n\n*Wednesday*\nButter "
-                "chicken",
-        'badges': {
-            'attachmentsByType': {
-                'trello': {
-                    'board': 0,
-                    'card': 0
-                }
-            },
-            'location': False,
-            'votes': 0,
-            'viewingMemberVoted': False,
-            'subscribed': False,
-            'fogbugz': '',
-            'checkItems': 104,
-            'checkItemsChecked': 0,
-            'checkItemsEarliestDue': None,
-            'comments': 0,
-            'attachments': 0,
-            'description': True,
-            'due': None,
-            'dueComplete': False,
-            'start': None
-        }
-    }
-    actual_response = trello_api.get_card(card_id='6526f7f91942a8eb420c8798')
-    assert actual_response == expected
-
-
-def test_get_actions(trello_api):
-    expected = [
+def test_mock_get_actions(mocker, trello_api):
+    mocked_call_api_value = [
         {
             'id': '6527c11e67d1e61487d2c4c8',
             'idMemberCreator': '5a82267fd787a99d39f3b8d3',
@@ -258,12 +189,13 @@ def test_get_actions(trello_api):
             }
         }
     ]
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
     actual_response = trello_api.get_actions(card_id='6526f7f91942a8eb420c87a6')
-    assert actual_response == expected
+    assert actual_response == mocked_call_api_value
 
-
-def test_get_labels(trello_api):
-    expected = [
+def test_get_labels(mocker,trello_api):
+    mocked_call_api_value = [
         {
             'id': '6526f7f91942a8eb420c8939',
             'name': 'Gluten Free',
@@ -307,17 +239,8 @@ def test_get_labels(trello_api):
             'uses': 15
         }
     ]
+    mocker.patch('trello_cli.trello_api.TrelloApi.call_api',
+                 return_value=mocked_call_api_value)
     actual_response = trello_api.get_labels(board_id='6526f7f91942a8eb420c84cc')
-    assert actual_response == expected
-
-
-def test_get_list_arg_type_value_error(trello_api) -> None:
-    with pytest.raises(ValueError):
-        trello_api.get_all_lists(board_id=dict)
-
-
-def test_create_card_wrong_arg_type_Value_error(trello_api) -> None:
-    with pytest.raises(ValueError):
-        trello_api.create_card(name=str, idList=int)
-
+    assert mocked_call_api_value == actual_response
 

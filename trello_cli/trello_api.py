@@ -3,6 +3,7 @@ from requests_oauthlib import OAuth1
 from enum import Enum
 import json
 import requests
+import os
 
 # set logging
 logging.basicConfig(level=logging.INFO)
@@ -18,7 +19,7 @@ class RequestType(Enum):
 
 class TrelloApi:
 
-    def __init__(self, api_key, api_token, api_secret, oauth_token, oauth_secret) -> None:
+    def __init__(self, api_key, api_token) -> None:
         """
         Constructor
 
@@ -28,17 +29,20 @@ class TrelloApi:
                     trello.util.create_oauth_token
         :token_secret: the OAuth client secret for the given OAuth token
         """
+        self.api_key = api_key or os.getenv("TRELLO_API_KEY")
+        self.api_secret = os.getenv("TRELLO_API_SECRET")
+        self.oauth_token = os.getenv("TRELLO_OAUTH_TOKEN")
+        self.oauth_secret = os.getenv("TRELLO_OAUTH_SECRET")
+        self.api_token = api_token or os.getenv("TRELLO_API_TOKEN")
 
         # client key and secret for oauth1 session
-        if api_key or oauth_token:
-            self.oauth = OAuth1(client_key=api_key, client_secret=api_secret,
-                                resource_owner_key=oauth_token, resource_owner_secret=oauth_secret)
+        if self.api_key or self.oauth_token:
+            self.oauth = OAuth1(client_key=self.api_key, client_secret=self.api_secret,
+                                resource_owner_key=self.oauth_token, resource_owner_secret=self.oauth_secret)
 
         else:
+            json.dumps({"ERROR": "Authorization Error, please check API & oauth keys/tokens"})
             self.oauth = None
-
-        self.api_key = api_key
-        self.api_token = api_token
 
         self.headers = {
             "Accept": "application/json"
@@ -77,57 +81,61 @@ class TrelloApi:
         """
         boards_url = f"{self.base_url}members/me/boards/?filter=all"
 
-        response = self.call_api(request_type=RequestType.GET.value,
-                                 endpoint=boards_url, payload={'fields': ['id', 'name']})
+        json_payload = self.call_api(request_type=RequestType.GET.value,
+                                     endpoint=boards_url, payload={'fields': ['id', 'name']})
 
-        return response
+        return json_payload
 
     def get_board(self, board_id: str) -> str:
-        board_url = f"{self.base_url}'/boards/{board_id}"
+        board_url = f"{self.base_url}boards/{board_id}"
         if isinstance(board_id, str):
-            response = self.call_api(request_type=RequestType.GET.value,
-                                     endpoint=board_url)
+            json_payload = self.call_api(request_type=RequestType.GET.value,
+                                         endpoint=board_url, payload={'fields': ['id', 'name', 'labels']})
         else:
             raise ValueError("ERROR - Parameter 'query_dict' should be of Type dict"
                              "and 'board_id should be of Type str")
-        return response
+        return json_payload
 
     def get_all_lists(self, board_id: str) -> str:
 
         lists_url = f"{self.base_url}/boards/{board_id}/lists"
         if isinstance(board_id, str):
-            response = self.call_api(request_type=RequestType.GET.value,
-                                     endpoint=lists_url, payload={'fields': ['id', 'name']})
+            json_payload = self.call_api(request_type=RequestType.GET.value,
+                                         endpoint=lists_url, payload={'fields': ['id', 'name']})
         else:
-            raise ValueError("ERROR - Parameter 'query_dict' should be of Type dict")
-        return response
+            raise ValueError("ERROR - Parameter board_id should be of type str")
+
+        return json_payload
 
     def get_list(self, list_id: str) -> str:
 
         list_url = f"{self.base_url}/lists/{list_id}"
+
         if isinstance(list_id, str):
-            response = self.call_api(request_type=RequestType.GET.value,
-                                     endpoint=list_url)
+            json_payload = self.call_api(request_type=RequestType.GET.value,
+                                         endpoint=list_url)
         else:
             raise ValueError("ERROR - Parameter 'list_id' should be of Type str")
-        return response
 
-    def create_card(self, name: str, list_id: str) -> str:
-        # TODO: find a way to elegantly check all param types
+        return json_payload
+
+    def create_card(self, name: str, idList: str) -> str:
+
         create_card_url = f"{self.base_url}/cards/"
 
-        if isinstance(list_id, str):
+        if isinstance(name, str) and isinstance(idList, str):
             payload = {
                 'name': name,
+                'idList': idList,
                 'key': self.api_key,
-                'token': self.api_token,
-                'idList': list_id
+                'token': self.api_token
             }
             json_payload = self.call_api(request_type=RequestType.POST.value,
                                          endpoint=create_card_url,
                                          payload=payload)
         else:
             raise ValueError("ERROR - Parameter 'list_id' should be of Type str")
+
         return json_payload
 
     def get_all_cards(self, list_id: str) -> str:
@@ -135,10 +143,7 @@ class TrelloApi:
         get_cards_url = f"{self.base_url}/lists/{list_id}/cards"
 
         if isinstance(list_id, str):
-            payload = {
-                'name': 'name',
-                'id': 'id'
-            }
+            payload = {'fields': ['id', 'name', 'labels', 'desc', 'badges']}
             json_payload = self.call_api(request_type=RequestType.GET.value,
                                          endpoint=get_cards_url,
                                          payload=payload)
@@ -151,13 +156,9 @@ class TrelloApi:
         get_card_url = f"{self.base_url}/cards/{card_id}"
 
         if isinstance(card_id, str):
-            payload = {
-                'name': 'name',
-                'id': 'id',
-                'labels': 'labels'
-            }
+            payload = {'fields': ['id', 'name', 'labels', 'desc', 'badges']}
             json_payload = self.call_api(request_type=RequestType.GET.value,
-                                         endpoint=get_card_url)
+                                         endpoint=get_card_url, payload=payload)
         else:
             raise ValueError("ERROR - Parameter 'list_id' should be of Type str")
         return json_payload
@@ -225,10 +226,11 @@ class TrelloApi:
             raise ValueError("ERROR - Parameter 'board_id' should be of Type str")
         return json_payload
 
-    def add_card_labels(self, card_id: str, label_id:str) -> str:
-        #TODO: in the payload, add a field for 'value' with the id of the label to add
+    def add_card_labels(self, card_id: str, label_id: str) -> str:
+        # TODO: in the payload, add a field for 'value' with the id of the label to add
         add_card_label_url = f"{self.base_url}/cards/{card_id}/idLabels"
         if isinstance(card_id, str):
+
             payload = {
                 'value': label_id,
                 'key': self.api_key,
