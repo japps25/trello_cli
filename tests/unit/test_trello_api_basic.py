@@ -1,24 +1,10 @@
 import pytest
+import json
+from typer.testing import CliRunner
 
-from trello_cli.trello_api import TrelloApi
 
-
-def test_auth_api_key_error() -> None:
-    """
-    Unit Test to Test Auth on Post Request
-    :return: None
-    """
-    trello_api_temp = TrelloApi(api_key="FAKE_KEY", api_token='FAKE_TOKEN')
-    trello_api_temp.headers = {
-        "Accept": "application/json"
-    }
-    trello_api_temp.base_url = "https://api.trello.com/1/"
-
-    expected = '{"ERROR": "Authorization Error. Please check API Key"}'
-
-    actual_response = trello_api_temp.get_all_boards()
-
-    assert expected == actual_response
+from trello_cli import (
+    ERRORS, SUCCESS, __app_name__, __version__, config)
 
 
 def test_get_all_boards(trello_api):

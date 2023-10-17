@@ -17,7 +17,7 @@ class RequestType(Enum):
     DELETE = "DELETE"
 
 
-class TrelloApi:
+class TrelloAPI:
 
     def __init__(self, api_key, api_token) -> None:
         """
@@ -227,7 +227,7 @@ class TrelloApi:
         return json_payload
 
     def add_card_labels(self, card_id: str, label_id: str) -> str:
-        # TODO: in the payload, add a field for 'value' with the id of the label to add
+
         add_card_label_url = f"{self.base_url}/cards/{card_id}/idLabels"
         if isinstance(card_id, str):
 
