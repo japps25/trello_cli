@@ -304,6 +304,6 @@ def test_get_list_arg_type_value_error(trello_api) -> None:
 
 def test_create_card_wrong_arg_type_Value_error(trello_api) -> None:
     with pytest.raises(ValueError):
-        trello_api.create_card(name=str, idList=int)
+        trello_api.create_card(name=str, idList=int, desc=str)
 
 

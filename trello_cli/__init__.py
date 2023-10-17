@@ -14,7 +14,7 @@ __version__ = '0.1.0'
 
 ERRORS = {
     TRELLO_READ_ERROR: "trello read error",
-    TRELLO_WRITE_ERROR: "trello write error",
+    TRELLO_WRITE_ERROR: "trello write error, please check if supplied arguments are valid",
     TRELLO_AUTHENTICATION_ERROR: "trello api authentication error",
     OAUTH1_ERROR: "oauth1 error"
 }

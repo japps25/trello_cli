@@ -91,5 +91,5 @@ def test_create_card(mocker, trello_api):
         return_value=mock_res
     )
 
-    res = trello_api.create_card(name="test", idList="test")
+    res = trello_api.create_card(name="test", idList="test", desc="test")
     assert res == mock_res
