@@ -1,5 +1,10 @@
-from typing import NamedTuple, List
+"""Module for handling API responses from Trello API"""
+
+# local imports
 from trello_cli.trello_data import Board, TrelloList, Card, Comment, Label
+
+# standard library imports
+from typing import NamedTuple, List
 
 
 class GetOAuthTokenResponse(NamedTuple):

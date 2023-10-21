@@ -1,17 +1,13 @@
+""" Unit Tests for Trello API Basic Functionality
+"""
+
+# third party imports
 import pytest
-import json
-from typer.testing import CliRunner
-
-
-from trello_cli import (
-    ERRORS, SUCCESS, __app_name__, __version__, config)
 
 
 def test_get_all_boards(trello_api):
     """
-    Unit Test to List Trello Boards
-    :param trello_api: Class Object Parameter from conftest. Type - TrelloAPI
-    :return: None
+    Test to check successful retrieval of all boards
     """
     expected_response = [
         {
@@ -37,6 +33,9 @@ def test_get_all_boards(trello_api):
 
 
 def test_get_board(trello_api):
+    """
+    Test to check successful retrieval of a single board
+    """
     expected = {
         'id': '6526f7f91942a8eb420c84cc',
         'name': 'Meal Planning'
@@ -46,6 +45,9 @@ def test_get_board(trello_api):
 
 
 def test_get_all_lists(trello_api):
+    """
+    Test to check successful retrieval of all lists
+    """
     expected = [
         {
             'id': '6526f7f91942a8eb420c84cd',
@@ -65,6 +67,10 @@ def test_get_all_lists(trello_api):
 
 
 def test_get_list(trello_api):
+    """
+    Test to check successful retrieval of a single list
+
+    """
     expected = {
         'id': '6526f7f91942a8eb420c84ce',
         'name': '10/26-11/1 Meal Plan',
@@ -77,8 +83,10 @@ def test_get_list(trello_api):
     assert actual_response == expected
 
 
-# can be used as a proxy for check the creation of a new list
 def test_get_all_cards(trello_api):
+    """
+    Test to check successful retrieval of all cards
+    """
     expected = [
         {
             'id': '6526f7f91942a8eb420c87a6',
@@ -151,6 +159,10 @@ def test_get_all_cards(trello_api):
 
 
 def test_get_card(trello_api):
+    """
+    Test to check successful retrieval of a single card
+
+    """
     expected = {
         'id': '6526f7f91942a8eb420c8798',
         'name': 'Kroger',
@@ -188,6 +200,9 @@ def test_get_card(trello_api):
 
 
 def test_get_actions(trello_api):
+    """
+    Test to check successful retrieval of all actions
+    """
     expected = [
         {
             'id': '6527c11e67d1e61487d2c4c8',
@@ -249,6 +264,9 @@ def test_get_actions(trello_api):
 
 
 def test_get_labels(trello_api):
+    """
+    Test to check successful retrieval of all labels
+    """
     expected = [
         {
             'id': '6526f7f91942a8eb420c8939',
@@ -298,12 +316,32 @@ def test_get_labels(trello_api):
 
 
 def test_get_list_arg_type_value_error(trello_api) -> None:
+    """
+    Test to check that a ValueError is raised when the wrong type is passed to the get_list method
+    """
     with pytest.raises(ValueError):
         trello_api.get_all_lists(board_id=dict)
 
 
+def test_get_list_arg_type_key_error(trello_api) -> None:
+    """
+    Test to check that a KeyError is raised when the wrong type is passed to the get_list method
+    """
+    with pytest.raises(KeyError):
+        trello_api.get_all_lists(board_id=int)
+
+
 def test_create_card_wrong_arg_type_Value_error(trello_api) -> None:
+    """
+    Test to check that a ValueError is raised when the wrong type is passed to the create_card method
+    """
     with pytest.raises(ValueError):
         trello_api.create_card(name=str, idList=int, desc=str)
 
 
+def test_create_card_wrong_arg_type_Key_error(trello_api) -> None:
+    """
+    Test to check that a KeyError is raised when the wrong type is passed to the create_card method
+    """
+    with pytest.raises(KeyError):
+        trello_api.create_card(name=str, idList=int, desc=str, idBoard=int)

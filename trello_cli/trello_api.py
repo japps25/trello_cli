@@ -1,3 +1,5 @@
+""" Module for handling Trello API calls"""
+
 # 3rd party imports
 from requests_oauthlib import OAuth1
 import requests
@@ -24,7 +26,7 @@ class RequestType(Enum):
 
 class TrelloAPI:
     """
-    Class to handle Trello API calls
+    Class to make POST nad GET requests to Trello API
 
     Api token, key and secret/ OAuth token and secret are required
     to make API calls. These should be stored in .env file in the root

@@ -1,7 +1,9 @@
+""" Test module for trello_api.py using mock responses """
+
+# local imports
 from trello_cli import (SUCCESS)
 from trello_cli.models import *
 from trello_cli.config import get_user_oauth_token
-import pytest_mock
 
 
 def test_get_user_oauth_token(mocker):

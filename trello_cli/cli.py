@@ -1,3 +1,5 @@
+""" Module to define the CLI commands for the trello_cli package"""
+
 # local imports
 from trello_cli import (ERRORS, SUCCESS, __app_name__, __version__, config)
 from trello_cli.trello_service import TrelloService
@@ -11,25 +13,16 @@ trello_service = TrelloService()
 
 @app.command()
 def init() -> None:
-    """Initializes the application by authenticating the user and then loads
-    the user's boards into the application.
+    """Authenticates the user and initialises the application. Only required once.
 
-    In order for the user to be successfully authenticated, the user must visit
-    https://trello.com/app-key to obtain an API key and secret.This must be stored
-    in an .env file in the root directory of the package.
+     Initialization:
+      1. locates user's api key and secret in a .env file in root dir
+      2. generates an oauth token and secret.
+      3. user's boards are loaded into the application.
 
-    During initialisation, the app locates the user's api key and secret and
-    generates an oauth token and secret. This is stored in the .env file.
-    Once complete, the user's boards are loaded into the application.
+    Usage:
+    python3 -m trello_cli init
 
-    Authentication is only required once.
-
-
-    Examples
-    --------
-    python -m trello_cli init
-    Initializing application...
-    your boards have been loaded:[<Board Meal Planning>]
 
     """
     typer.echo("Initializing application...")
@@ -40,7 +33,7 @@ def init() -> None:
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
-    service_res = trello_service.init_trello()
+    service_res = trello_service.get_trello_boards()
     if service_res.status_code != SUCCESS:
         typer.secho(
             f'Error initializing service: {ERRORS[service_res.status_code]}',
@@ -58,21 +51,13 @@ def init() -> None:
 def get_board(
         board_id: str
 ) -> None:
-    """CLI command to get a trello board from user's account
+    """Gets a trello board from the user's account
 
-    Parameters
-    ----------
-    board_id: str
-        id required for retrieving a board can be sourced from the parent
-        board by running the get-board command
+    :param board_id:  can be sourced from the parent board by running the get-board command
+    :type board_id: str
 
-
-    Examples
-    --------
-    python -m trello_cli get-board "6526f7f91942a8eb420c84cc"
-    your board has been loaded :[<Board Meal Planning>]
-    lists: [<List Guidelines>]
-
+    Usage:
+    python3 -m trello_cli get-board "6526f7f91942a8eb420c84cc"
 
     """
     board = trello_service.get_board(board_id)
@@ -97,19 +82,12 @@ def get_board(
 def get_list(
         list_id: str
 ) -> None:
-    """ CLI command to get a list from a specific trello board
+    """Gets a list from a given trello board
 
-    Parameters
-    ----------
-    list_id: str
-        required for retrieval from a trello board. Can be sourced
-        from the parent board by running the get-board command
+    :param list_id: can be sourced from the parent board by running the get-board command
+    :type list_id: str
 
-    Examples
-    --------
-    python -m trello_cli get-list "6523e63b8e337f3ce55311a3"
-    your list has been loaded :[<List Guidelines>]
-    cards: [<Card Grid-Based Design>]
+    Usage: python3 -m trello_cli get-list "6523e63b8e337f3ce55311a3"
 
     """
     trello_list = trello_service.get_list(str(list_id))
@@ -134,20 +112,13 @@ def get_list(
 def get_card(
         card_id: str
 ) -> None:
-    """ CLI command to gets a card from a trello list
+    """Gets a card from a given trello list
 
-    Parameters
-    ----------
-    card_id: str
-        id required for retrieving a card. Can be sourced from
-        the parent list by running the get-list command
+    :param card_id: can be sourced from the parent list by running the get-list command
+    :type card_id: str
 
-    Examples
-    --------
-    python -m trello_cli get-card "6523e63b8e337f3ce55312f5"
-    your card has been loaded :[<Card Grid-Based Design>]
-    comments: [<Comment This is a test comment>]
-    labels: [<Label green>]
+    Usage:
+    python3 -m trello_cli get-card "6523e63b8e337f3ce55312f5"
 
     """
     typer.echo("Getting card...")
@@ -177,19 +148,13 @@ def get_card(
 def create_card(
         list_id=typer.Argument(...)
 ) -> None:
-    """CLI command to create a card from a trello board
+    """Creates a new card on a trello list
 
-    Parameters
-    ----------
-    list_id: str
-        id for retrieving a list from a trello board. Can be sourced
-        from the parent board by running the get-board command
+    :param list_id: id for retrieving a list from a trello board to add a card to.
+    :type list_id: str
 
-    Examples
-    --------
-    python -m trello_cli create-card "6523e63b8e337f3ce55311a3"
-    Enter your card name: test
-    your card has been created :[<Card test>]
+    Usage:
+    python3 -m trello_cli create-card "6523e63b8e337f3ce55311a3"
 
     """
     name = typer.prompt("Enter your card name")
@@ -212,21 +177,13 @@ def create_card(
 def create_comment(
         card_id=typer.Argument(...)
 ) -> None:
-    """CLI command to create a comment from a trello card
+    """Creates a comment on a given trello card
 
-    Parameters
-    ----------
-    card_id: str
-        id for retrieving a card from a trello board to add a
-        comment to. Can be sourced from the parent list by running
-        the get-list command
+    :param card_id: can be sourced from the parent list by running the get-list command
+    :type card_id: str
 
-
-    Examples
-    --------
+    Usage:
     python -m trello_cli create-comment "6523e63b8e337f3ce55312f5"
-    Enter your comment: This is a test comment
-    your comment has been created :[<Comment This is a test comment>]
     """
     text = typer.prompt("Enter your comment")
     comment = trello_service.create_comment(card_id, text)
@@ -248,22 +205,17 @@ def add_card_label(
         card_id=typer.Argument(...),
         label_id: str = typer.Argument(...)
 ) -> None:
-    """CLI command to add a label to a trello card
+    """Adds a label to a trello card
 
-    Parameters
-    ----------
-    card_id: str
-        id of card to add label to. Can be sourced from the parent
-        list by running the get-list command
+    :param card_id: can be sourced from the parent list by running the get-list command
+    :type card_id: str
+    :param card_id: can be sourced from the parent list by running the get-list command
+    :type card_id: str
+    :param label_id: can be sourced from the parent board by running the get-board command
+    :type label_id: str
 
-    label_id: str
-        id of desired label to add to card. Can be sourced from the
-        parent board by running the get-board command
-
-    Examples
-    --------
+    Usage:
     python -m trello_cli add-card-label "6523e63b8e337f3ce55312f5" "6523e63b8e337f3ce55312f5"
-    your label has been added
 
     """
     card = trello_service.add_card_label(card_id, label_id)

@@ -1,17 +1,18 @@
-from typer.testing import CliRunner
-from trello_cli import SUCCESS
-import pytest
+"""Unit tests for the CLI."""
+
+# local imports
 from trello_cli import __app_name__, __version__, cli
 
+# third party imports
+from typer.testing import CliRunner
+import pytest
+
+# Setup
 runner = CliRunner()
 
-board_data = {
-    'id': '6526f7f91942a8eb420c84cc',
-    'name': 'Meal Planning'
-}
-
+# Test data
+board_data = {'id': '6526f7f91942a8eb420c84cc', 'name': 'Meal Planning'}
 list_data = {'name': 'Guidelines', 'id': '6523e63b8e337f3ce55311a3'}
-
 card_data = {'name': 'Grid-Based Design', 'id': '6523e63b8e337f3ce55312f5'}
 
 
