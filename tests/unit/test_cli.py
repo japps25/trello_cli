@@ -11,7 +11,7 @@ import pytest
 runner = CliRunner()
 
 # Test data
-board_data = {'id': '6526f7f91942a8eb420c84cc', 'name': 'Meal Planning'}
+board_data = {'id': '65352f31c09f6a38f8df1d0a', 'name': 'Simple Project Board'}
 list_data = {'name': 'Guidelines', 'id': '6523e63b8e337f3ce55311a3'}
 card_data = {'name': 'Grid-Based Design', 'id': '6523e63b8e337f3ce55312f5'}
 

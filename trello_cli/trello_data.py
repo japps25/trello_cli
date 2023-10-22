@@ -19,12 +19,11 @@ class TrelloBase(object):
 
     def __init__(self):
         self.client = TrelloAPI(
-                api_key=os.getenv("TRELLO_API_KEY"),
-                api_secret=os.getenv("TRELLO_API_SECRET"),
-                api_token=os.getenv("TRELLO_API_TOKEN"),
-                oauth_token=os.getenv("TRELLO_OAUTH_TOKEN"),
-                oauth_secret=os.getenv("TRELLO_OAUTH_SECRET")
-    )
+            api_key=os.getenv("TRELLO_API_KEY"),
+            api_secret=os.getenv("TRELLO_API_SECRET"),
+            api_token=os.getenv("TRELLO_API_TOKEN"),
+            oauth_token=os.getenv("TRELLO_OAUTH_TOKEN"),
+            oauth_secret=os.getenv("TRELLO_OAUTH_SECRET"))
 
 
 class Comment(TrelloBase):
@@ -240,6 +239,7 @@ class TrelloList(TrelloBase):
         __repr__(self): returns a string representation of a TrelloList object
 
     """
+
     def __init__(self, list_id, name):
         super().__init__()
         self.list_id = list_id

@@ -1,4 +1,5 @@
 """ Module to define the CLI commands for the trello_cli package"""
+from typing import Optional
 
 # local imports
 from trello_cli import (ERRORS, SUCCESS, __app_name__, __version__, config)
@@ -242,5 +243,14 @@ def _version_callback(value: bool) -> None:
 
 
 @app.callback()
-def main() -> None:
+def main(
+    version: Optional[bool] = typer.Option(
+        None,
+        "--version",
+        "-v",
+        help="Show the application's version and exit.",
+        callback=_version_callback,
+        is_eager=True,
+    )
+) -> None:
     return

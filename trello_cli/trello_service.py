@@ -84,11 +84,12 @@ class TrelloService:
                 res=board,
                 status_code=SUCCESS
             )
-        except ValueError:
+        except (ValueError, KeyError):
             return GetBoardResponse(
                 res=None,
                 status_code=TRELLO_READ_ERROR
             )
+
 
     def get_list(self, list_id) -> GetListResponse:
         """Method to hande the get_list response from Trello API
@@ -112,7 +113,7 @@ class TrelloService:
                 res=trello_list,
                 status_code=SUCCESS
             )
-        except ValueError:
+        except (ValueError, KeyError):
             return GetListResponse(
                 res=None,
                 status_code=TRELLO_READ_ERROR
@@ -140,7 +141,7 @@ class TrelloService:
                 res=card,
                 status_code=SUCCESS
             )
-        except ValueError:
+        except TypeError:
             return GetCardResponse(
                 res=None,
                 status_code=TRELLO_READ_ERROR
@@ -169,7 +170,7 @@ class TrelloService:
                 res=card,
                 status_code=SUCCESS
             )
-        except ValueError:
+        except (ValueError, KeyError):
             return CreateCardResponse(
                 res=None,
                 status_code=TRELLO_WRITE_ERROR
@@ -228,7 +229,7 @@ class TrelloService:
                 res=label,
                 status_code=SUCCESS
             )
-        except ValueError:
+        except (ValueError, KeyError):
             return AddCardLabelResponse(
                 res=None,
                 status_code=TRELLO_WRITE_ERROR

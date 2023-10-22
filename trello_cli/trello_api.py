@@ -1,5 +1,7 @@
 """ Module for handling Trello API calls"""
 
+# local imports
+from trello_cli import SUCCESS, TRELLO_AUTHENTICATION_ERROR
 # 3rd party imports
 from requests_oauthlib import OAuth1
 import requests
@@ -58,15 +60,6 @@ class TrelloAPI:
         oauth_secret: str
             trello oauth secret (a 64 character string)
 
-        Attributes
-        ----------
-        oauth: OAuth1Session
-            OAuth1Session object for making oauth1 requests
-        headers: dict
-            headers for making requests
-        base_url: str
-            base url for making trello API requests
-
         """
         self.api_key = api_key
         self.api_secret = api_secret
@@ -122,9 +115,8 @@ class TrelloAPI:
 
             if response.status_code in (200, 201):
                 return response
-            if response.status_code == (400, 404, 401):
-                # handled by trello_cli/trello_service.py
-                return response
+            if response.status_code in (401, 403):
+                return TRELLO_AUTHENTICATION_ERROR
             response.raise_for_status()
         except requests.exceptions.HTTPError as errh:
             logging.error(errh)
@@ -170,6 +162,7 @@ class TrelloAPI:
         if isinstance(board_id, str):
             response = self.call_api(request_type=RequestType.GET.value,
                                      endpoint=board_url, payload={'fields': ['id', 'name', 'labels']})
+
         else:
             raise ValueError("ERROR - Parameter 'board_id' should be of type str")
         return response

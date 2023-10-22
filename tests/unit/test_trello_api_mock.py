@@ -40,7 +40,7 @@ def test_init_trello(mocker, trello_api):
 def test_get_board(mocker, trello_api):
     """Test to check success retrieval of a trello board"""
     mock_res = GetBoardResponse(
-        res=Board(id="test", name="test"),
+        res=Board(board_id="test", name="test"),
         status_code=SUCCESS
     )
     mocker.patch(
