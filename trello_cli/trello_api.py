@@ -1,10 +1,13 @@
 """ Module for handling Trello API calls"""
+from __future__ import annotations
 
 # local imports
 from trello_cli import SUCCESS, TRELLO_AUTHENTICATION_ERROR
+
 # 3rd party imports
 from requests_oauthlib import OAuth1
 import requests
+from dotenv import find_dotenv, set_key, load_dotenv
 
 # standard library imports
 from enum import Enum
@@ -15,6 +18,8 @@ import logging
 # set logging
 logging.basicConfig(level=logging.INFO)
 
+#load environment vars
+load_dotenv()
 
 class RequestType(Enum):
     """Represents common HTTP request types as string"""
@@ -112,11 +117,13 @@ class TrelloAPI:
             elif request_type == "POST":
                 response = requests.post(endpoint, self.headers, headers=self.headers, timeout=30,
                                          params=payload)
-
             if response.status_code in (200, 201):
                 return response
-            if response.status_code in (401, 403):
-                return TRELLO_AUTHENTICATION_ERROR
+            elif response.status_code == 401:
+                return json.dumps({"ERROR": "Authorization Error. Please check API Key"})
+            if response.status_code in (400, 403, 404):
+                #these error codes are handled by trello_cli/trello_service.py
+                return response
             response.raise_for_status()
         except requests.exceptions.HTTPError as errh:
             logging.error(errh)
@@ -134,7 +141,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the User's trello boards
+            response containing the User's trello boards
 
         """
         boards_url = f"{self.base_url}members/me/boards/?filter=all"
@@ -156,7 +163,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the User's trello board
+            response containing the User's trello board
         """
         board_url = f"{self.base_url}boards/{board_id}"
         if isinstance(board_id, str):
@@ -179,7 +186,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the lists from the given board
+            response containing the lists from the given board
         """
         lists_url = f"{self.base_url}/boards/{board_id}/lists"
         if isinstance(board_id, str):
@@ -202,7 +209,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the User's trello list
+            response containing the User's trello list
         """
         list_url = f"{self.base_url}/lists/{list_id}"
 
@@ -228,7 +235,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the created card
+            response containing the created card
         """
         create_card_url = f"{self.base_url}/cards/"
 
@@ -259,7 +266,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the cards from the given list
+            response containing the cards from the given list
         """
         get_cards_url = f"{self.base_url}/lists/{list_id}/cards"
 
@@ -284,7 +291,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the User's trello card
+            response containing the User's trello card
         """
         get_card_url = f"{self.base_url}/cards/{card_id}"
 
@@ -312,7 +319,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the actions from the given card
+            response containing the actions from the given card
         """
 
         get_actions_url = f"{self.base_url}/cards/{card_id}/actions"
@@ -340,7 +347,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the created comment
+            response containing the created comment
 
         """
         create_comment_url = f"{self.base_url}/cards/{card_id}/actions/comments"
@@ -374,7 +381,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the created label
+            response containing the created label
         """
         create_label_url = f"{self.base_url}/labels"
 
@@ -405,7 +412,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the labels from the given board
+            response containing the labels from the given board
         """
         get_labels_url = f"{self.base_url}/boards/{board_id}/labels"
 
@@ -434,7 +441,7 @@ class TrelloAPI:
         Returns
         -------
         response: str
-            json response containing the added label
+            response containing the added label
         """
         add_card_label_url = f"{self.base_url}/cards/{card_id}/idLabels"
 
@@ -451,3 +458,6 @@ class TrelloAPI:
         else:
             raise ValueError("ERROR - Parameters 'card_id' and 'label_id' should be of type str")
         return response
+
+    def __repr__(self):
+        return f"TrelloAPI[Oauth Token={self.oauth_token}, Oauth Secret={self.oauth_secret}]"

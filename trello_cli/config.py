@@ -17,6 +17,8 @@ AUTHORIZE_URL = 'https://trello.com/1/OAuthAuthorizeToken'
 ACCESS_TOKEN_URL = 'https://trello.com/1/OAuthGetAccessToken'
 
 
+
+
 def init() -> int:
     """
     Authenticates the user's Trello account and sets the necessary
@@ -27,12 +29,13 @@ def init() -> int:
     status code: int
         representing the status of the authentication process
     """
-    api_code = init_trello_api()
-    if api_code != SUCCESS:
-        return api_code
-    auth_code = _load_oauth_token_env_var()
-    if auth_code != SUCCESS:
-        return auth_code
+    status = init_trello_api()
+    if status != SUCCESS:
+        return status
+
+    auth_status = _load_oauth_token_env_var()
+    if auth_status != SUCCESS:
+        return auth_status
     return SUCCESS
 
 
@@ -46,6 +49,7 @@ def init_trello_api() -> int:
     status code: int
         representing the status of the authentication process
     """
+    load_dotenv()
     if not os.getenv("TRELLO_API_TOKEN") and not os.getenv("TRELLO_API_SECRET"):
         print("Please visit https://trello.com/app-key to obtain your API key and secret.")
         return TRELLO_AUTHENTICATION_ERROR
@@ -62,6 +66,7 @@ def _load_oauth_token_env_var() -> int:
     status code: int
         representing the status of the authentication process
     """
+    #loads env variables for get_user_oauth_token()
     load_dotenv()
     if not os.getenv("TRELLO_OAUTH_TOKEN"):
         res = get_user_oauth_token()
@@ -77,11 +82,15 @@ def _load_oauth_token_env_var() -> int:
                 key_to_set="TRELLO_OAUTH_SECRET",
                 value_to_set=res.secret
             )
+
         else:
             print("User denied access.")
             _load_oauth_token_env_var()
-    return SUCCESS
 
+    
+    load_dotenv()
+    return SUCCESS
+ZZ
 
 def get_user_oauth_token() -> GetOAuthTokenResponse:
     """Retrieves the user's oauth token
@@ -94,11 +103,11 @@ def get_user_oauth_token() -> GetOAuthTokenResponse:
     try:
         res = create_oauth_token()
         return GetOAuthTokenResponse(
-            token=res[0],
-            secret=res[1],
+            token=res.token,
+            secret=res.secret,
             status_code=SUCCESS
         )
-    except OSError:
+    except (ValueError, KeyError):
         return GetOAuthTokenResponse(
             token="",
             secret="",
@@ -130,7 +139,6 @@ def create_oauth_token(verbose=False) -> dict:
     access_token: dict
         dictionary containing the user's oauth token and secret
     """
-
     expiration = '30days'
     scope = 'read,write'
     trello_key = os.getenv("TRELLO_API_KEY")
@@ -160,7 +168,7 @@ def create_oauth_token(verbose=False) -> dict:
 
     input_func = input
 
-    print("To proceed with authentication via Trello.com, follow the link")
+    print("To proceed with authentication via Trello.com, follow the link above")
     oauth_verifier = input_func('What is the PIN? ')
 
     # step 4: Request access token the user has approved

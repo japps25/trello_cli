@@ -1,6 +1,9 @@
 """ This module contains the business logic needed to interact Trello API"""
 from __future__ import annotations
 
+#third party imports
+from dotenv import find_dotenv, set_key, load_dotenv
+
 # local imports
 from trello_cli.trello_api import TrelloAPI
 from trello_cli.models import *
@@ -224,9 +227,8 @@ class TrelloService:
         """
         try:
             response = self.__client.add_card_labels(card_id, label_id)
-            label = Label.from_json(response.json())
             return AddCardLabelResponse(
-                res=label,
+                res="",
                 status_code=SUCCESS
             )
         except (ValueError, KeyError):

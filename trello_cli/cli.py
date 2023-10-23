@@ -9,8 +9,6 @@ from trello_cli.trello_service import TrelloService
 import typer
 
 app = typer.Typer()
-trello_service = TrelloService()
-
 
 @app.command()
 def init() -> None:
@@ -27,20 +25,23 @@ def init() -> None:
 
     """
     typer.echo("Initializing application...")
-    app_init_error = config.init()
-    if app_init_error:
+    app_init_status = config.init()
+    if app_init_status:
         typer.secho(
-            f'Error initializing application: {ERRORS[app_init_error]}',
+            f'Error initializing application: {ERRORS[app_init_status]}',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
-    service_res = trello_service.get_trello_boards()
+
+
+    service_res = TrelloService().get_trello_boards()
     if service_res.status_code != SUCCESS:
         typer.secho(
             f'Error initializing service: {ERRORS[service_res.status_code]}',
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
+
     else:
         typer.secho(
             f"your boards have been loaded:{service_res.res}",
@@ -52,16 +53,18 @@ def init() -> None:
 def get_board(
         board_id: str
 ) -> None:
-    """Gets a trello board from the user's account
+    """Gets a trello board from the user's account. 
+
+    Returns board details including name, id and a set of labels
 
     :param board_id:  can be sourced from the parent board by running the get-board command
     :type board_id: str
 
     Usage:
-    python3 -m trello_cli get-board "6526f7f91942a8eb420c84cc"
+    python3 -m trello_cli get-board "65352f31c09f6a38f8df1d0a"
 
     """
-    board = trello_service.get_board(board_id)
+    board = TrelloService().get_board(board_id)
     if board.status_code != SUCCESS:
         typer.secho(
             f'Error getting board: {ERRORS[board.status_code]}',
@@ -77,6 +80,10 @@ def get_board(
             f"lists: {board[0].get_all_lists()}",
             fg=typer.colors.GREEN,
         )
+        typer.secho(
+            f"labels:  {board[0].get_labels()}",
+            fg=typer.colors.GREEN,
+        )
 
 
 @app.command()
@@ -88,10 +95,10 @@ def get_list(
     :param list_id: can be sourced from the parent board by running the get-board command
     :type list_id: str
 
-    Usage: python3 -m trello_cli get-list "6523e63b8e337f3ce55311a3"
+    Usage: python3 -m trello_cli get-list "65352f31c09f6a38f8df1d0c"
 
     """
-    trello_list = trello_service.get_list(str(list_id))
+    trello_list = TrelloService().get_list(str(list_id))
     if trello_list.status_code != SUCCESS:
         typer.secho(
             f'Error getting list: {ERRORS[trello_list.status_code]}',
@@ -119,11 +126,11 @@ def get_card(
     :type card_id: str
 
     Usage:
-    python3 -m trello_cli get-card "6523e63b8e337f3ce55312f5"
+    python3 -m trello_cli get-card "65352f31c09f6a38f8df1d59"
 
     """
     typer.echo("Getting card...")
-    card = trello_service.get_card(str(card_id))
+    card = TrelloService().get_card(str(card_id))
     if card.status_code != SUCCESS:
         typer.secho(
             f'Error getting card: {ERRORS[card.status_code]}',
@@ -151,15 +158,15 @@ def create_card(
 ) -> None:
     """Creates a new card on a trello list
 
-    :param list_id: id for retrieving a list from a trello board to add a card to.
+    :param list_id: can be sourced from the parent board by running the get-board command
     :type list_id: str
 
     Usage:
-    python3 -m trello_cli create-card "6523e63b8e337f3ce55311a3"
+    python3 -m trello_cli create-card "65352f31c09f6a38f8df1d0c"
 
     """
     name = typer.prompt("Enter your card name")
-    card = trello_service.create_card(name, list_id)
+    card = TrelloService().create_card(name, list_id)
 
     if card.status_code != SUCCESS:
         typer.secho(
@@ -184,10 +191,10 @@ def create_comment(
     :type card_id: str
 
     Usage:
-    python -m trello_cli create-comment "6523e63b8e337f3ce55312f5"
+    python3 -m trello_cli create-comment "65352f31c09f6a38f8df1d59"
     """
     text = typer.prompt("Enter your comment")
-    comment = trello_service.create_comment(card_id, text)
+    comment = TrelloService().create_comment(card_id, text)
     if comment.status_code != SUCCESS:
         typer.secho(
             f'Error creating comment: {ERRORS[comment.status_code]}',
@@ -216,10 +223,10 @@ def add_card_label(
     :type label_id: str
 
     Usage:
-    python -m trello_cli add-card-label "6523e63b8e337f3ce55312f5" "6523e63b8e337f3ce55312f5"
+    python3 -m trello_cli add-card-label "65352f31c09f6a38f8df1d59" "65352f31c09f6a38f8df1d65"
 
     """
-    card = trello_service.add_card_label(card_id, label_id)
+    card = TrelloService().add_card_label(card_id, label_id)
     if card.status_code != SUCCESS:
         typer.secho(
             f'Error adding label: {ERRORS[card.status_code]}',

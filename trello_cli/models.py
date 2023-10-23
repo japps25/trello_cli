@@ -96,9 +96,9 @@ class AddCardLabelResponse(NamedTuple):
     """Model to store response when adding a label to a card
 
     Attributes
-        res (Label): label
+        res (str): empty string
         status_code (int): success / error
 
     """
-    res: Label
+    res: str
     status_code: int

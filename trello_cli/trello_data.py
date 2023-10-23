@@ -1,5 +1,8 @@
 """Module for representing trello data"""
 
+#third party imports 
+from dotenv import find_dotenv, set_key, load_dotenv
+
 # local imports
 from trello_cli.models import *
 from trello_cli.trello_api import TrelloAPI
@@ -7,6 +10,8 @@ from trello_cli.trello_api import TrelloAPI
 # standard library imports
 import os
 
+#load environment vars
+load_dotenv()
 
 class TrelloBase(object):
     """
@@ -202,7 +207,7 @@ class Card(TrelloBase):
         Creates a string representation of a card object
         """
         return (
-            f' (id = {self.card_id}, name={self.name})'
+            f' (id = {self.card_id}, name={self.name}, labels={self.labels})'
         )
 
     def get_comments(self):
