@@ -90,7 +90,7 @@ def _load_oauth_token_env_var() -> int:
     
     load_dotenv()
     return SUCCESS
-ZZ
+
 
 def get_user_oauth_token() -> GetOAuthTokenResponse:
     """Retrieves the user's oauth token

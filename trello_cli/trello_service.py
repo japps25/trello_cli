@@ -236,3 +236,4 @@ class TrelloService:
                 res=None,
                 status_code=TRELLO_WRITE_ERROR
             )
+

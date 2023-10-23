@@ -168,4 +168,4 @@ cython_debug/
 
 #misc
 qodana.yaml
-.idea
+.idea/
