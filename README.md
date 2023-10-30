@@ -32,14 +32,26 @@ TRELLO_API_SECRET = <your_trello_api_secret>
 
 ## Usage
 
-1. Run the package:
-    1. `python3 -m trello_cli init` to initialize the app and load trello boards with their id's and names
-    2. `python3 -m trello_cli --help` to see the available commands and options
+1. Run the package
+    - `python3 -m trello_cli --help` to see the available commands and options
+    ![Alt text](screenshot1.png)
+    - To see what arguments a command takes, run the command with the `--help` flag
+2. Retrieve ID's 
+    - Retrieve a board ID 
+      - `python3 -m trello_cli app-init` to initialize and load the user's trello board and label ID's  
+    - Retrieve a list or label ID: `python3 -m trello_cli get-board <board_id>` 
+    - Retrieve a card ID: `python3 -m trello_cli get-cards <list_id>`
+2. Add a card 
+    - `python3 -m trello_cli make-trello-card` and enter the list_id and a card name when prompted 
+3. Prepend a comment to a card 
+    - `python3 -m trello_cli prepend-comment` and enter card_id and comment text when prompted 
+4. Prepend a label to a card
+    - `python3 -m trello_cli prepend-label` and enter card_id and label_id when prompted 
+    - Note: the label_id and the card_id must belong to the same trello_board
+
+
      
-    3. Check for required id's by running the command with the `--help` flag. For example, to add a card to a trello
-       list, run `python3 -m trello_cli add_card --help` to see the required id and usage example
-     
-2. To run the tests: `python3 -m pytests tests/`
+
 
 
 
