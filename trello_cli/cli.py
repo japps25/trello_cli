@@ -58,7 +58,7 @@ def app_init() -> None:
 
 
 @app.command(rich_help_panel="2. Retrieve your trello object ID's")
-def get_lists(
+def get_board(
         board_id: Annotated[str, typer.Option(prompt=True)]
 ) -> None:
     """Gets a board object
