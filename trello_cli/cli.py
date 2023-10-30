@@ -2,7 +2,7 @@
 import sys
 
 # local imports
-from trello_cli import (ERRORS, SUCCESS, __app_name__, __version__, config)
+from trello_cli import (ERRORS, SUCCESS, TRELLO_WRITE_ERROR, __app_name__, __version__, config)
 from trello_cli.trello_service import TrelloService
 
 # 3rd party imports
@@ -63,9 +63,9 @@ def get_board(
 ) -> None:
     """Gets a board object
 
-    Returns board details including name, id and a set of labels
+    Returns details of a board including list and label ID's 
 
-    :param board_id:  can be sourced from the parent board by running the get-board command
+    :param board_id: id of a trello board (sourced from running trello_cli app-init)
     :type board_id: str
 
     Usage:
@@ -243,23 +243,13 @@ def prepend_label(
         )
         raise typer.Exit(1)
 
-    # checks if label already exists
-    card = TrelloService().get_card(card_id)
-    card_labels = card.res.get_labels()
-    if label_id in [label.label_id for label in card_labels]:
+    card_res = TrelloService().add_card_label(str(card_id), str(label_id))
+    
+    if card_res.status_code != SUCCESS:
         typer.secho(
-            f'Error adding label: label already exists',
+            f'Error adding label: {ERRORS[card_res.status_code]}',
             fg=typer.colors.RED,
         )
-        raise typer.Exit(1)
-
-    card = TrelloService().add_card_label(str(card_id.strip()), str(label_id.strip()))
-    if card.status_code != SUCCESS:
-        typer.secho(
-            f'Error adding label: {ERRORS[card.status_code]}',
-            fg=typer.colors.RED,
-        )
-        typer.secho("Please check the label_id belongs to the same board as the card_id", fg=typer.colors.RED)
         raise typer.Exit(1)
     else:
         typer.secho(
