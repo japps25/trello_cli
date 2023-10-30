@@ -12,7 +12,7 @@ from rich.console import Console
 from rich.theme import Theme
 from typing import Optional
 
-app = typer.Typer(rich_markup_mode="markdown")
+app = typer.Typer(rich_markup_mode="markdown", add_completion=False)
 
 custom_theme = Theme({
     "id": "blue",
@@ -161,7 +161,7 @@ def view_card(
             console.print(f"{color},[id]id: {label.label_id}[/id]")
 
 
-@app.command(rich_help_panel="3. Create a trello objects")
+@app.command(rich_help_panel="3. Create trello objects")
 def make_trello_card(
         list_id: Annotated[str, typer.Option(prompt=True)],
         name: Annotated[str, typer.Option(prompt=True)]
@@ -191,7 +191,7 @@ def make_trello_card(
         )
 
 
-@app.command(rich_help_panel="3. Create a trello objects")
+@app.command(rich_help_panel="3. Create trello objects")
 def prepend_comment(
         card_id: Annotated[str, typer.Option(prompt=True)],
         text: Annotated[str, typer.Option(prompt=True)],
@@ -219,7 +219,7 @@ def prepend_comment(
         )
 
 
-@app.command(rich_help_panel="3. Create a trello objects")
+@app.command(rich_help_panel="3. Create trello objects")
 def prepend_label(
         card_id: Annotated[str, typer.Option(prompt=True)],
         label_id: Annotated[str, typer.Option(prompt=True)],
