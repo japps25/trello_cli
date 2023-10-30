@@ -259,6 +259,7 @@ def prepend_label(
             f'Error adding label: {ERRORS[card.status_code]}',
             fg=typer.colors.RED,
         )
+        typer.secho("Please check the label_id belongs to the same board as the card_id", fg=typer.colors.RED)
         raise typer.Exit(1)
     else:
         typer.secho(

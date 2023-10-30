@@ -366,41 +366,6 @@ class TrelloAPI:
             raise ValueError("ERROR - Parameters 'card_id' and 'text' should be of type str")
         return response
 
-    def create_label(self, name: str, color: str, board_id: str) -> str:
-        """
-        Request for creating a label on a given trello board
-
-        Parameters
-        ----------
-        name: str
-            name of the label to create
-        color: str
-            color of the label to create
-        board_id: str
-            id of the board to create the label on
-
-        Returns
-        -------
-        response: str
-            response containing the created label
-        """
-        create_label_url = f"{self.base_url}/labels"
-
-        if isinstance(board_id, str) and isinstance(name, str) and isinstance(color, str):
-            payload = {
-                'name': name,
-                'color': color,
-                'idBoard': board_id,
-                'key': self.api_key,
-                'token': self.api_token,
-            }
-            response = self.call_api(request_type=RequestType.POST.value,
-                                     endpoint=create_label_url,
-                                     payload=payload)
-        else:
-            raise ValueError("ERROR - Parameters 'board_id', 'name' and 'color' should be of type str")
-        return response
-
     def get_labels(self, board_id: str) -> str:
         """
         Request for retrieving all the labels from a given trello board
@@ -427,7 +392,7 @@ class TrelloAPI:
             raise ValueError("ERROR - Parameter 'board_id' should be of type str")
         return response
 
-    def add_card_labels(self, card_id: str, label_id: str):
+    def add_card_label(self, card_id: str, label_id: str):
         """
         Request for adding a label to a given trello card
 

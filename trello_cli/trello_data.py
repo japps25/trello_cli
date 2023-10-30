@@ -340,6 +340,7 @@ class Board(TrelloBase):
         """
         Returns all lists associated with a board
         """
+
         json_payload = self.client.get_all_lists(self.board_id)
         trello_lists = [TrelloList.from_json(trello_list) for trello_list in json_payload.json()]
         return trello_lists

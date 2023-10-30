@@ -1,7 +1,7 @@
 """ This module contains the business logic needed to interact Trello API"""
 from __future__ import annotations
 
-#third party imports
+# third party imports
 from dotenv import find_dotenv, set_key, load_dotenv
 
 # local imports
@@ -92,7 +92,6 @@ class TrelloService:
                 res=None,
                 status_code=TRELLO_READ_ERROR
             )
-
 
     def get_list(self, list_id) -> GetListResponse:
         """Method to hande the get_list response from Trello API
@@ -226,7 +225,7 @@ class TrelloService:
 
         """
         try:
-            self.__client.add_card_labels(card_id, label_id)
+            response = self.__client.add_card_label(card_id, label_id)
             card = self.get_card(card_id)
             return AddCardLabelResponse(
                 res=card,
@@ -237,4 +236,3 @@ class TrelloService:
                 res=None,
                 status_code=TRELLO_WRITE_ERROR
             )
-

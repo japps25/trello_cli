@@ -22,7 +22,7 @@ def test_get_user_oauth_token(mocker):
     assert res.status_code == SUCCESS
 
 
-def test_init_trello(mocker, trello_api):
+def test_get_all_boards(mocker, trello_api):
     """Test to check success retrieval of all trello boards"""
     mock_res = GetAllBoardsResponse(
         res=[],
@@ -94,4 +94,34 @@ def test_create_card(mocker, trello_api):
     )
 
     res = trello_api.create_card(name="test", idList="test", desc="test")
+    assert res == mock_res
+
+
+def test_create_comment(mocker, trello_api):
+    """Test to check success creation of a trello comment"""
+    mock_res = CreateCommentResponse(
+        res=None,
+        status_code=SUCCESS
+    )
+    mocker.patch(
+        'trello_cli.trello_api.TrelloAPI.create_comment',
+        return_value=mock_res
+    )
+
+    res = trello_api.create_comment(idCard="test", text="test")
+    assert res == mock_res
+
+
+def test_add_card_label(mocker, trello_api):
+    """Test to check success addition of a trello label to a card"""
+    mock_res = AddCardLabelResponse(
+        res=None,
+        status_code=SUCCESS
+    )
+    mocker.patch(
+        'trello_cli.trello_api.TrelloAPI.add_card_label',
+        return_value=mock_res
+    )
+
+    res = trello_api.add_card_label(card_id="test", label_id="test")
     assert res == mock_res

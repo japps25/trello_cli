@@ -13,6 +13,3 @@ def test_get_list_arg_type_value_error(trello_api) -> None:
         trello_api.get_all_lists(board_id=dict)
     assert str(exc_info.value) == "ERROR - Parameter board_id should be of type str"
 
-
-
-
