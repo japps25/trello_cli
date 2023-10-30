@@ -18,8 +18,9 @@ import logging
 # set logging
 logging.basicConfig(level=logging.INFO)
 
-#load environment vars
+# load environment vars
 load_dotenv()
+
 
 class RequestType(Enum):
     """Represents common HTTP request types as string"""
@@ -43,7 +44,7 @@ class TrelloAPI:
 
     """
 
-    def __init__ (self, api_key,api_secret,api_token,oauth_token,oauth_secret) -> None:
+    def __init__(self, api_key, api_secret, api_token, oauth_token, oauth_secret) -> None:
         """
         Initializes the TrelloAPI class for making requests to the Trello API
 
@@ -122,7 +123,7 @@ class TrelloAPI:
             elif response.status_code == 401:
                 return json.dumps({"ERROR": "Authorization Error. Please check API Key"})
             if response.status_code in (400, 403, 404):
-                #these error codes are handled by trello_cli/trello_service.py
+                # these error codes are handled by trello_cli/trello_service.py
                 return response
             response.raise_for_status()
         except requests.exceptions.HTTPError as errh:
@@ -426,7 +427,7 @@ class TrelloAPI:
             raise ValueError("ERROR - Parameter 'board_id' should be of type str")
         return response
 
-    def add_card_labels(self, card_id: str, label_id: str) -> str:
+    def add_card_labels(self, card_id: str, label_id: str):
         """
         Request for adding a label to a given trello card
 
@@ -459,5 +460,3 @@ class TrelloAPI:
             raise ValueError("ERROR - Parameters 'card_id' and 'label_id' should be of type str")
         return response
 
-    def __repr__(self):
-        return f"TrelloAPI[Oauth Token={self.oauth_token}, Oauth Secret={self.oauth_secret}]"

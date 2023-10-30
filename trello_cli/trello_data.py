@@ -225,6 +225,17 @@ class Card(TrelloBase):
         comments = sorted(comments, key=lambda comment: comment.date, reverse=True)
         return comments
 
+    def get_labels(self):
+        """
+        Returns a list of labels on a card in reverse chronological order
+
+        Returns
+        -------
+            labels: list
+                list of labels on a card in reverse chronological order
+
+        """
+        return Label.from_json_list(self.labels)
 
 class TrelloList(TrelloBase):
     """

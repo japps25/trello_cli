@@ -144,7 +144,7 @@ class TrelloService:
                 res=card,
                 status_code=SUCCESS
             )
-        except TypeError:
+        except ValueError:
             return GetCardResponse(
                 res=None,
                 status_code=TRELLO_READ_ERROR
@@ -226,9 +226,10 @@ class TrelloService:
 
         """
         try:
-            response = self.__client.add_card_labels(card_id, label_id)
+            self.__client.add_card_labels(card_id, label_id)
+            card = self.get_card(card_id)
             return AddCardLabelResponse(
-                res="",
+                res=card,
                 status_code=SUCCESS
             )
         except (ValueError, KeyError):

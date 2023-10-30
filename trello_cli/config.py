@@ -10,13 +10,10 @@ import os
 from dotenv import find_dotenv, set_key, load_dotenv
 from requests_oauthlib import OAuth1Session
 
-
 # Trello API URLs
 REQUEST_TOKEN_URL = 'https://trello.com/1/OAuthGetRequestToken'
 AUTHORIZE_URL = 'https://trello.com/1/OAuthAuthorizeToken'
 ACCESS_TOKEN_URL = 'https://trello.com/1/OAuthGetAccessToken'
-
-
 
 
 def init() -> int:
@@ -66,7 +63,7 @@ def _load_oauth_token_env_var() -> int:
     status code: int
         representing the status of the authentication process
     """
-    #loads env variables for get_user_oauth_token()
+    # loads env variables for get_user_oauth_token()
     load_dotenv()
     if not os.getenv("TRELLO_OAUTH_TOKEN"):
         res = get_user_oauth_token()
@@ -87,7 +84,6 @@ def _load_oauth_token_env_var() -> int:
             print("User denied access.")
             _load_oauth_token_env_var()
 
-    
     load_dotenv()
     return SUCCESS
 

@@ -35,10 +35,10 @@ TRELLO_API_SECRET = <your_trello_api_secret>
 1. Run the package:
     1. `python3 -m trello_cli init` to initialize the app and load trello boards with their id's and names
     2. `python3 -m trello_cli --help` to see the available commands and options
-       ![repo_images/screenshot1.png](repo_images/screenshot1.png)
+     
     3. Check for required id's by running the command with the `--help` flag. For example, to add a card to a trello
        list, run `python3 -m trello_cli add_card --help` to see the required id and usage example
-       ![img.png](repo_images/screenshot2.png)
+     
 2. To run the tests: `python3 -m pytests tests/`
 
 

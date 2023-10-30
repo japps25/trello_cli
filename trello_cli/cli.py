@@ -1,5 +1,5 @@
 """ Module to define the CLI commands for the trello_cli package"""
-from typing import Optional
+import sys
 
 # local imports
 from trello_cli import (ERRORS, SUCCESS, __app_name__, __version__, config)
@@ -7,12 +7,22 @@ from trello_cli.trello_service import TrelloService
 
 # 3rd party imports
 import typer
+from typing_extensions import Annotated
+from rich.console import Console
+from rich.theme import Theme
+from typing import Optional
 
-app = typer.Typer()
+app = typer.Typer(rich_markup_mode="markdown")
 
-@app.command()
-def init() -> None:
-    """Authenticates the user and initialises the application. Only required once.
+custom_theme = Theme({
+    "id": "blue",
+})
+console = Console(theme=custom_theme)
+
+
+@app.command(rich_help_panel="1. Getting started")
+def app_init() -> None:
+    """Authenticates the user and loads trello boards into the app
 
      Initialization:
       1. locates user's api key and secret in a .env file in root dir
@@ -24,7 +34,6 @@ def init() -> None:
 
 
     """
-    typer.echo("Initializing application...")
     app_init_status = config.init()
     if app_init_status:
         typer.secho(
@@ -32,7 +41,6 @@ def init() -> None:
             fg=typer.colors.RED,
         )
         raise typer.Exit(1)
-
 
     service_res = TrelloService().get_trello_boards()
     if service_res.status_code != SUCCESS:
@@ -43,17 +51,17 @@ def init() -> None:
         raise typer.Exit(1)
 
     else:
-        typer.secho(
-            f"your boards have been loaded:{service_res.res}",
-            fg=typer.colors.GREEN,
-        )
+        boards = service_res.res
+        console.rule(f"Trello boards")
+        for board in boards:
+            console.print(f"{board.name}, [id]id: {board.board_id}[/id]")
 
 
-@app.command()
+@app.command(rich_help_panel="2. Retrieve your trello object ID's")
 def get_board(
-        board_id: str
+        board_id: Annotated[str, typer.Option(prompt=True)]
 ) -> None:
-    """Gets a trello board from the user's account. 
+    """Gets a board object
 
     Returns board details including name, id and a set of labels
 
@@ -72,23 +80,24 @@ def get_board(
         )
         raise typer.Exit(1)
     else:
-        typer.secho(
-            f"your board has been loaded :{board.res}",
-            fg=typer.colors.GREEN,
-        )
-        typer.secho(
-            f"lists: {board[0].get_all_lists()}",
-            fg=typer.colors.GREEN,
-        )
-        typer.secho(
-            f"labels:  {board[0].get_labels()}",
-            fg=typer.colors.GREEN,
-        )
+        board = board.res
+        lists = board.get_all_lists()
+        labels = board.get_labels()
+        console.print(f"loaded {board.name}: [id]id: {board.board_id}[/id]")
+
+        console.rule(f"lists of {board.name}")
+        for list in lists:
+            console.print(f"{list.name}, [id]id: {list.list_id}[/id]")
+
+        console.rule(f"labels of {board.name}")
+        for label in labels:
+            color = label.color
+            console.print(f"label: {label.color}, [id]id: {label.label_id}[/id]")
 
 
-@app.command()
-def get_list(
-        list_id: str
+@app.command(rich_help_panel="2. Retrieve your trello object ID's")
+def get_cards(
+        list_id: Annotated[str, typer.Option(prompt=True)]
 ) -> None:
     """Gets a list from a given trello board
 
@@ -106,19 +115,17 @@ def get_list(
         )
         raise typer.Exit(1)
     else:
-        typer.secho(
-            f"your list has been loaded :{trello_list.res}",
-            fg=typer.colors.GREEN,
-        )
-        typer.secho(
-            f"cards: {trello_list.res.get_all_cards()}",
-            fg=typer.colors.GREEN,
-        )
+        trello_list = trello_list.res
+        console.print(f"loaded {trello_list.name}: [id]id: {trello_list.list_id}[/id]")
+        cards = trello_list.get_all_cards()
+        console.rule(f"cards of {trello_list.name}")
+        for card in cards:
+            console.print(f"{card.name}, [id]id: {card.card_id}[/id]")
 
 
-@app.command()
-def get_card(
-        card_id: str
+@app.command(rich_help_panel="2. Retrieve your trello object ID's")
+def view_card(
+        card_id: Annotated[str, typer.Option(prompt=True)]
 ) -> None:
     """Gets a card from a given trello list
 
@@ -138,23 +145,26 @@ def get_card(
         )
         raise typer.Exit(1)
     else:
-        typer.secho(
-            f"your card has been loaded :{card.res}",
-            fg=typer.colors.GREEN,
-        )
-        typer.secho(
-            f"comments: {card.res.get_comments()}",
-            fg=typer.colors.GREEN,
-        )
-        typer.secho(
-            f"labels: {card.res.labels}",
-            fg=typer.colors.GREEN,
-        )
+        card = card.res
+        comments = card.get_comments()
+        labels = card.get_labels()
+
+        console.print(f"loaded {card.name}: [id]id: {card.card_id}[/id]")
+
+        console.rule(f"comments of {card.name}")
+        for comment in comments:
+            console.print(f"{comment}")
+
+        console.rule(f"labels of {card.name}")
+        for label in labels:
+            color = label.color
+            console.print(f"{color},[id]id: {label.label_id}[/id]")
 
 
-@app.command()
-def create_card(
-        list_id=typer.Argument(...)
+@app.command(rich_help_panel="3. Create a trello objects")
+def make_trello_card(
+        list_id: Annotated[str, typer.Option(prompt=True)],
+        name: Annotated[str, typer.Option(prompt=True)]
 ) -> None:
     """Creates a new card on a trello list
 
@@ -165,7 +175,6 @@ def create_card(
     python3 -m trello_cli create-card "65352f31c09f6a38f8df1d0c"
 
     """
-    name = typer.prompt("Enter your card name")
     card = TrelloService().create_card(name, list_id)
 
     if card.status_code != SUCCESS:
@@ -175,15 +184,17 @@ def create_card(
         )
         raise typer.Exit(1)
     else:
+        card = card.res
         typer.secho(
-            f"your card has been created :{card.res}",
+            f"your card has been created :{card}",
             fg=typer.colors.GREEN,
         )
 
 
-@app.command()
-def create_comment(
-        card_id=typer.Argument(...)
+@app.command(rich_help_panel="3. Create a trello objects")
+def prepend_comment(
+        card_id: Annotated[str, typer.Option(prompt=True)],
+        text: Annotated[str, typer.Option(prompt=True)],
 ) -> None:
     """Creates a comment on a given trello card
 
@@ -193,7 +204,7 @@ def create_comment(
     Usage:
     python3 -m trello_cli create-comment "65352f31c09f6a38f8df1d59"
     """
-    text = typer.prompt("Enter your comment")
+
     comment = TrelloService().create_comment(card_id, text)
     if comment.status_code != SUCCESS:
         typer.secho(
@@ -208,15 +219,13 @@ def create_comment(
         )
 
 
-@app.command()
-def add_card_label(
-        card_id=typer.Argument(...),
-        label_id: str = typer.Argument(...)
+@app.command(rich_help_panel="3. Create a trello objects")
+def prepend_label(
+        card_id: Annotated[str, typer.Option(prompt=True)],
+        label_id: Annotated[str, typer.Option(prompt=True)],
 ) -> None:
     """Adds a label to a trello card
 
-    :param card_id: can be sourced from the parent list by running the get-list command
-    :type card_id: str
     :param card_id: can be sourced from the parent list by running the get-list command
     :type card_id: str
     :param label_id: can be sourced from the parent board by running the get-board command
@@ -226,7 +235,25 @@ def add_card_label(
     python3 -m trello_cli add-card-label "65352f31c09f6a38f8df1d59" "65352f31c09f6a38f8df1d65"
 
     """
-    card = TrelloService().add_card_label(card_id, label_id)
+    # checks if duplicate keys are passed
+    if card_id == label_id:
+        typer.secho(
+            f'Error adding label: card_id and label_id cannot be the same',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+
+    # checks if label already exists
+    card = TrelloService().get_card(card_id)
+    card_labels = card.res.get_labels()
+    if label_id in [label.label_id for label in card_labels]:
+        typer.secho(
+            f'Error adding label: label already exists',
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+
+    card = TrelloService().add_card_label(str(card_id.strip()), str(label_id.strip()))
     if card.status_code != SUCCESS:
         typer.secho(
             f'Error adding label: {ERRORS[card.status_code]}',
@@ -249,15 +276,16 @@ def _version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def main(
-    version: Optional[bool] = typer.Option(
-        None,
-        "--version",
-        "-v",
-        help="Show the application's version and exit.",
-        callback=_version_callback,
-        is_eager=True,
-    )
+        version: Optional[bool] = typer.Option(
+            None,
+            "--version",
+            "-v",
+            help="Show the application's version and exit.",
+            callback=_version_callback,
+            is_eager=True)
 ) -> None:
+    """Main entry point for trello_cli"""
+    typer.secho("try 'trello_cli --help' for commands ", fg=typer.colors.GREEN)
     return

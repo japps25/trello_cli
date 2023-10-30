@@ -11,9 +11,10 @@ import pytest
 runner = CliRunner()
 
 # Test data
-board_data = {'id': '65352f31c09f6a38f8df1d0a', 'name': 'Simple Project Board'}
-list_data = {'name': 'Guidelines', 'id': '6523e63b8e337f3ce55311a3'}
-card_data = {'name': 'Grid-Based Design', 'id': '6523e63b8e337f3ce55312f5'}
+board_data = {'board_id': '65352f31c09f6a38f8df1d0a', 'name': 'Simple Project Board'}
+list_data = {'name': 'TODO', 'id': '65352f31c09f6a38f8df1d0c'}
+card_data = {'name': "Move anything 'ready' here", 'id': '65352f31c09f6a38f8df1d59'}
+label_data = {'board_id': '65352f31c09f6a38f8df1d0a', 'label': 'blue', 'id': '65352f31c09f6a38f8df1d65'}
 
 
 def test_version():
@@ -23,51 +24,46 @@ def test_version():
 
 
 def test_get_board():
-    result = runner.invoke(cli.app, ["get-board", board_data['id']])
+    result = runner.invoke(cli.app, ["get-board"], input=board_data['id'])
     assert result.exit_code == 0
     assert board_data['name'] in result.stdout
+    assert board_data['id'] in result.stdout
     assert "lists" in result.stdout
+    assert "labels" in result.stdout
 
 
-def test_get_list():
-    result = runner.invoke(cli.app, ["get-list", list_data['id']])
-    assert result.exit_code == 0
-    assert list_data['name'] in result.stdout
-    assert "cards" in result.stdout
-
-
-def test_get_card():
-    result = runner.invoke(cli.app, ["get-card", card_data['id']])
+def test_get_cards():
+    result = runner.invoke(cli.app, ["get-cards"], input=list_data['id'])
     assert result.exit_code == 0
     assert card_data['name'] in result.stdout
+    assert card_data['id'] in result.stdout
+
+
+def test_view_card():
+    result = runner.invoke(cli.app, ["view-card"], input=card_data['id'])
+    assert result.exit_code == 0
+    assert card_data['name'] in result.stdout
+    assert card_data['id'] in result.stdout
     assert "comments" in result.stdout
     assert "labels" in result.stdout
 
 
-@pytest.mark.parametrize(
-    "list_id",
-    [
-        pytest.param(
-            list_data["id"]
-        )
-    ],
-)
-def test_create_card(list_id):
-    result = runner.invoke(cli.app, ["create-card", list_id], input="test")
+def test_make_trello_card():
+    result = runner.invoke(cli.app, ["make-trello-card"], input=list_data['id'] + "\ntest\n")
     assert result.exit_code == 0
     assert "your card has been created" in result.stdout
+    assert "test" in result.stdout
 
 
-@pytest.mark.parametrize(
-    "card_id",
-    [
-        pytest.param(
-            card_data["id"]
-        )
-    ],
-)
-def test_create_comment(card_id):
-    result = runner.invoke(cli.app, ["create-comment", card_id], input="test")
+def test_prepend_comment():
+    result = runner.invoke(cli.app, ["prepend-comment"], input=card_data['id'] + "\ntest\n")
     assert result.exit_code == 0
     assert "your comment has been created" in result.stdout
     assert "test" in result.stdout
+
+
+def test_prepend_label():
+    result = runner.invoke(cli.app, ["prepend-label"], input=card_data['id'] + "\n" + label_data['id'] + "\n")
+    assert result.exit_code == 0
+    assert "your label has been added" in result.stdout
+
