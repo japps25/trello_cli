@@ -53,7 +53,7 @@ TRELLO_API_SECRET = <your_trello_api_secret>
 #### 5. Prepend a comment to a card 
   - `python3 -m trello_cli prepend-comment` and enter card_id and comment text when prompted
 
-#### 5. Prepend a label to a card
+#### 6. Prepend a label to a card
   -`python3 -m trello_cli prepend-label` and enter card_id and label_id when prompted 
   - Note: the label_id and the card_id must belong to the same trello_board
 
