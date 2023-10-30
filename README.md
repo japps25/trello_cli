@@ -32,32 +32,37 @@ TRELLO_API_SECRET = <your_trello_api_secret>
 
 ## Usage
 
-1. Run the package
-    - `python3 -m trello_cli --help` to see the available commands and options
-    ![command menu](repo_images/screenshot1.png)
-    - To see what arguments a command takes, run the command with the `--help` flag
-    ![command help option](repo_images/screenshot3.png)
-2. Retrieve ID's 
-    - Retrieve a board ID 
-      - `python3 -m trello_cli app-init` to initialize and load the user's trello board and label ID's  
-      ![loaded boards](repo_images/screenshot2.png)
-    - Retrieve a list or label ID: `python3 -m trello_cli get-board <board_id>` 
-      ![board details](repo_images/screenshot4.png)
-    - Retrieve a card ID: `python3 -m trello_cli get-cards <list_id>`
-      ![list details](repo_images/screenshot5.png)
-3. View a card 
-    `python3 -m trello_cli view-card`
-    ![card details](repo_images/screenshot6.png)
-2. Add a card 
-    - `python3 -m trello_cli make-trello-card` and enter the list_id and a card name when prompted
-    ![trello card creation](repo_images/screenshot7.png)
-3. Prepend a comment to a card 
-    - `python3 -m trello_cli prepend-comment` and enter card_id and comment text when prompted
-    ![comment creation](repo_images/screenshot8.png)
-4. Prepend a label to a card
-    - `python3 -m trello_cli prepend-label` and enter card_id and label_id when prompted 
-    - Note: the label_id and the card_id must belong to the same trello_board
-    ![attached label](repo_images/screenshot9.png)
+#### 1. Run the package
+  - `python3 -m trello_cli --help` to see the available commands and options
+  ![command menu](repo_images/screenshot1.png)
+  - To see what arguments a command takes, run the command with the `--help` flag
+  ![command help option](repo_images/screenshot3.png)
+
+#### 2. Retrieve ID's 
+  - Retrieve a board ID 
+    - `python3 -m trello_cli app-init` to initialize and load the user's trello board and label ID's  
+    ![loaded boards](repo_images/screenshot2.png)
+  - Retrieve a list or label ID: `python3 -m trello_cli get-board <board_id>` 
+    ![board details](repo_images/screenshot4.png)
+  - Retrieve a card ID: `python3 -m trello_cli get-cards <list_id>`
+    ![list details](repo_images/screenshot5.png)
+
+#### 3. View a card 
+  `python3 -m trello_cli view-card`
+  ![card details](repo_images/screenshot6.png)
+
+#### 4. Add a card 
+  - `python3 -m trello_cli make-trello-card` and enter the list_id and a card name when prompted
+  ![trello card creation](repo_images/screenshot7.png)
+
+#### 5. Prepend a comment to a card 
+  - `python3 -m trello_cli prepend-comment` and enter card_id and comment text when prompted
+  ![comment creation](repo_images/screenshot8.png)
+
+#### 5. Prepend a label to a card
+  -`python3 -m trello_cli prepend-label` and enter card_id and label_id when prompted 
+  - Note: the label_id and the card_id must belong to the same trello_board
+  ![attached label](repo_images/screenshot9.png)
 
 
      
