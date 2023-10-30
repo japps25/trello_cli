@@ -226,12 +226,11 @@ class TrelloService:
         """
         try:
             response = self.__client.add_card_label(card_id, label_id)
-            card = self.get_card(card_id)
             return AddCardLabelResponse(
-                res=card,
+                res=response,
                 status_code=SUCCESS
             )
-        except (ValueError, KeyError):
+        except (TRELLO_WRITE_ERROR):
             return AddCardLabelResponse(
                 res=None,
                 status_code=TRELLO_WRITE_ERROR
