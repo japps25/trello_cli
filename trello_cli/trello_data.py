@@ -1,6 +1,6 @@
 """Module for representing trello data"""
 
-#third party imports 
+# third party imports
 from dotenv import find_dotenv, set_key, load_dotenv
 
 # local imports
@@ -10,8 +10,9 @@ from trello_cli.trello_api import TrelloAPI
 # standard library imports
 import os
 
-#load environment vars
+# load environment vars
 load_dotenv()
+
 
 class TrelloBase(object):
     """
@@ -236,6 +237,7 @@ class Card(TrelloBase):
 
         """
         return Label.from_json_list(self.labels)
+
 
 class TrelloList(TrelloBase):
     """

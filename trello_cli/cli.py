@@ -277,6 +277,4 @@ def main(
             callback=_version_callback,
             is_eager=True)
 ) -> None:
-    """Main entry point for trello_cli"""
-    typer.secho("try 'trello_cli --help' for commands ", fg=typer.colors.GREEN)
     return

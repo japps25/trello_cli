@@ -63,7 +63,14 @@ def test_prepend_comment():
 
 
 def test_prepend_label():
-    result = runner.invoke(cli.app, ["prepend-label"], input=card_data['card_id'] + "\n" + label_data['label_id'] + "\n")
-    assert result.exit_code == 1
-    assert "Error adding label: label already exists" in result.stdout
+    result = runner.invoke(cli.app, ["prepend-label"],
+                           input=card_data['card_id'] + "\n" + label_data['label_id'] + "\n")
+    assert "your label has been added" in result.stdout
+    assert result.exit_code == 0
 
+
+def test_prepend_label_param_error():
+    result = runner.invoke(cli.app, ["prepend-label"],
+                           input=board_data['board_id'] + "\n" + label_data['board_id'] + "\n")
+    assert 'Error adding label: card_id and label_id cannot be the same' in result.stdout
+    assert result.exit_code == 1
