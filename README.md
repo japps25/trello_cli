@@ -34,7 +34,7 @@ TRELLO_API_SECRET = <your_trello_api_secret>
 
 1. Run the package
     - `python3 -m trello_cli --help` to see the available commands and options
-    ![Alt text](screenshot1.png)
+    ![command menu](repo_images/screenshot1.png)
     - To see what arguments a command takes, run the command with the `--help` flag
 2. Retrieve ID's 
     - Retrieve a board ID 
